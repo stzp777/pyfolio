@@ -890,7 +890,7 @@ def get_max_drawdown_underwater(underwater):
         The maximum drawdown's recovery.
     """
 
-    valley = underwater.idxmin()  # end of the period
+    valley = underwater.index[np.argmin(underwater)-1]  # end of the period
     
     # Find first 0
     peak = underwater[:valley][underwater[:valley] == 0].index[-1]
@@ -1006,14 +1006,14 @@ def gen_drawdown_table(returns, top=10):
             df_drawdowns.loc[i, 'Duration'] = len(pd.date_range(peak,
                                                                 recovery,
                                                                 freq='B'))
-        df_drawdowns.loc[i, 'Peak date'] = (peak.dt.to_pydatetime()
+        df_drawdowns.loc[i, 'Peak date'] = (peak.to_pydatetime()
                                             .strftime('%Y-%m-%d'))
-        df_drawdowns.loc[i, 'Valley date'] = (valley.dt.to_pydatetime()
+        df_drawdowns.loc[i, 'Valley date'] = (valley.to_pydatetime()
                                               .strftime('%Y-%m-%d'))
         if isinstance(recovery, float):
             df_drawdowns.loc[i, 'Recovery date'] = recovery
         else:
-            df_drawdowns.loc[i, 'Recovery date'] = (recovery.dt.to_pydatetime()
+            df_drawdowns.loc[i, 'Recovery date'] = (recovery.to_pydatetime()
                                                     .strftime('%Y-%m-%d'))
         df_drawdowns.loc[i, 'Net drawdown in %'] = (
             (df_cum.loc[peak] - df_cum.loc[valley]) / df_cum.loc[peak]) * 100
